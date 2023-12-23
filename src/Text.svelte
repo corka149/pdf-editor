@@ -1,3 +1,5 @@
+<svelte:options immutable={true} />
+
 <script>
   import { onMount, createEventDispatcher } from "svelte";
   import Toolbar from "./Toolbar.svelte";
@@ -34,7 +36,7 @@
     }
     dispatch("update", {
       x: x + dx,
-      y: y + dy
+      y: y + dy,
     });
     dx = 0;
     dy = 0;
@@ -54,7 +56,7 @@
     sanitize();
     dispatch("update", {
       lines: extractLines(),
-      width: editable.clientWidth
+      width: editable.clientWidth,
     });
     operation = "";
   }
@@ -109,7 +111,7 @@
       lines: extractLines(),
       lineHeight: _lineHeight,
       size: _size,
-      fontFamily: _fontFamily
+      fontFamily: _fontFamily,
     });
     operation = "";
   }
@@ -117,7 +119,7 @@
     let weirdNode;
     while (
       (weirdNode = Array.from(editable.childNodes).find(
-        node => !["#text", "BR"].includes(node.nodeName)
+        (node) => !["#text", "BR"].includes(node.nodeName)
       ))
     ) {
       editable.removeChild(weirdNode);
@@ -125,7 +127,7 @@
   }
   function onChangeFont() {
     dispatch("selectFont", {
-      name: _fontFamily
+      name: _fontFamily,
     });
   }
   function render() {
@@ -154,16 +156,6 @@
   onMount(render);
 </script>
 
-<style>
-  .editing {
-    @apply pointer-events-none border-gray-800 border-dashed;
-  }
-  .font-family {
-    @apply block appearance-none h-6 w-full bg-white pl-2 pr-8 rounded-sm leading-tight;
-  }
-</style>
-
-<svelte:options immutable={true} />
 {#if operation}
   <Toolbar>
     <div
@@ -172,56 +164,64 @@
       on:mousedown={onFocusTool}
       on:touchstart={onFocusTool}
       class="h-full flex justify-center items-center bg-gray-300 border-b
-      border-gray-400">
+      border-gray-400"
+    >
       <div class="mr-2 flex items-center">
-        <img src="/line_height.svg" class="w-6 mr-2" alt="Line height" />
+        <img src="line_height.svg" class="w-6 mr-2" alt="Line height" />
         <input
           type="number"
           min="1"
           max="10"
           step="0.1"
           class="h-6 w-12 text-center flex-shrink-0 rounded-sm"
-          bind:value={_lineHeight} />
+          bind:value={_lineHeight}
+        />
       </div>
       <div class="mr-2 flex items-center">
-        <img src="/text.svg" class="w-6 mr-2" alt="Font size" />
+        <img src="text.svg" class="w-6 mr-2" alt="Font size" />
         <input
           type="number"
           min="12"
           max="120"
           step="1"
           class="h-6 w-12 text-center flex-shrink-0 rounded-sm"
-          bind:value={_size} />
+          bind:value={_size}
+        />
       </div>
       <div class="mr-2 flex items-center">
-        <img src="/text-family.svg" class="w-4 mr-2" alt="Font family" />
+        <img src="text-family.svg" class="w-4 mr-2" alt="Font family" />
         <div class="relative w-32 md:w-40">
           <select
             bind:value={_fontFamily}
             on:change={onChangeFont}
-            class="font-family">
+            class="font-family"
+          >
             {#each Families as family}
               <option value={family}>{family}</option>
             {/each}
           </select>
           <div
             class="pointer-events-none absolute inset-y-0 right-0 flex
-            items-center px-2 text-gray-700">
+            items-center px-2 text-gray-700"
+          >
             <svg
               class="fill-current h-4 w-4"
               xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 20 20">
+              viewBox="0 0 20 20"
+            >
               <path
                 d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757
-                6.586 4.343 8z" />
+                6.586 4.343 8z"
+              />
             </svg>
           </div>
         </div>
       </div>
       <div
         on:click={onDelete}
-        class="w-5 h-5 rounded-full bg-white cursor-pointer">
-        <img class="w-full h-full" src="/delete.svg" alt="delete object" />
+        class="w-5 h-5 rounded-full bg-white cursor-pointer"
+      >
+        <img class="w-full h-full" src="delete.svg" alt="delete object" />
       </div>
     </div>
   </Toolbar>
@@ -230,7 +230,8 @@
   use:tapout
   on:tapout={onBlur}
   class="absolute left-0 top-0 select-none"
-  style="transform: translate({x + dx}px, {y + dy}px);">
+  style="transform: translate({x + dx}px, {y + dy}px);"
+>
   <div
     use:pannable
     on:panstart={handlePanStart}
@@ -239,8 +240,9 @@
     class="absolute w-full h-full cursor-grab border border-dotted
     border-gray-500"
     class:cursor-grab={!operation}
-    class:cursor-grabbing={operation === 'move'}
-    class:editing={['edit', 'tool'].includes(operation)} />
+    class:cursor-grabbing={operation === "move"}
+    class:editing={["edit", "tool"].includes(operation)}
+  />
   <div
     bind:this={editable}
     on:focus={onFocus}
@@ -250,5 +252,15 @@
     spellcheck="false"
     class="outline-none whitespace-no-wrap"
     style="font-size: {_size}px; font-family: '{_fontFamily}', serif;
-    line-height: {_lineHeight}; -webkit-user-select: text;" />
+    line-height: {_lineHeight}; -webkit-user-select: text;"
+  />
 </div>
+
+<style>
+  .editing {
+    @apply pointer-events-none border-gray-800 border-dashed;
+  }
+  .font-family {
+    @apply block appearance-none h-6 w-full bg-white pl-2 pr-8 rounded-sm leading-tight;
+  }
+</style>
