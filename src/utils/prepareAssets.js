@@ -11,7 +11,7 @@ const scripts = [
     name: "download",
     src: "vendor/downloadjs.js",
   },
-  { name: "makeTextPDF", src: "/makeTextPDF.js" },
+  { name: "makeTextPDF", src: "makeTextPDF.js" },
 ];
 
 const assets = {};
